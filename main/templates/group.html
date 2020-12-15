@@ -1,0 +1,139 @@
+{% extends 'common/base.html' %}
+{% load static %}
+{% block title %}
+{% endblock %}
+{% block styles %}
+{% endblock %}
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4 offset-md-1 block">
+                    <img class="group_image" src="{{ group.photo }}">
+                    <div class="group_h">
+                        <h2 class="group_label">{{ group.name }}</h2>
+                        <h3 class="group_label">{{ group.members }} Подписчиков</h3>
+                    </div>
+                </div>
+                <div class="col-md-5 offset-md-1 block">
+                    <div class="col-md-12">
+                        <div class="metric">
+                         <span class="icon"><i class="fa fa-eye"></i></span>
+                            <p>
+                                <span class="number">12341</span>
+                                <span class="title">Охват за сутки</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="metric">
+                         <span class="icon"><i class="fa fa-history"></i></span>
+                            <p>
+                                <span class="number">235</span>
+                                <span class="title">Ср. охват поста</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="metric">
+                         <span class="icon"><i class="fa fa-laptop"></i></span>
+                            <p>
+                                <span class="number">10%</span>
+                                <span class="title">% ботов</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="metric">
+                         <span class="icon"><i class="fa fa-user"></i></span>
+                            <p>
+                                <span class="number">16</span>
+                                <span class="title">Ср. возраст</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+            <div class="col-md-10 offset-md-1 first_block">
+                <div class="chart-head">
+                    <a href="#lineChart" class="chart_links active">Активность</a>
+                    <a href="#Data" class="chart_links">Данные</a>
+                    <a href="#People" class="chart_links">Подписки</a>
+                </div>
+                <canvas class="tab" id="lineChart" height="100"></canvas>
+                <div class="row tab" id="Data">
+                    <div class="col-md-5 offset-md-1 inline">
+                        <canvas id="pie-chart" width="800" height="450"></canvas>
+                    </div>
+                    <div class="col-md-5 inline">
+                        <canvas id="pie-chart2" width="800" height="450"></canvas>
+                    </div>
+                </div>
+                <div class="row tab chart_none" id="People">
+                    <canvas id="PeopleChart" height="100"></canvas>
+                </div>
+            </div>
+        <div class="col-md-10 offset-md-1 first_block">
+            <h1>Конкуренты</h1>
+            <div class="row">
+                <div class="col-md-3 group_card">
+                    <img src="{% static 'img/img.jpg' %}" class="img_group">
+                    <ul>
+                        <li class="group_name">Kali linux</li>
+                        <li class="group_name">3234</li>
+                        <li class="group_name">12/1</li>
+                        <li class="group_name">
+                            <button class="btn group_btn">Перейти</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-3 group_card">
+                    <img src="{% static 'img/img.jpg' %}" class="img_group">
+                    <ul>
+                        <li class="group_name">Kali linux</li>
+                        <li class="group_name">3234</li>
+                        <li class="group_name">12/1</li>
+                        <li class="group_name">
+                            <button class="btn group_btn">Перейти</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-3 group_card">
+                    <img src="{% static 'img/img.jpg' %}" class="img_group">
+                    <ul>
+                        <li class="group_name">Kali linux</li>
+                        <li class="group_name">3234</li>
+                        <li class="group_name">12/1</li>
+                        <li class="group_name">
+                            <button class="btn group_btn">Перейти</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+        let query = {
+            query: `query{
+            group(_key:"{{ group.gid }}"){
+    Posts {
+      Likes
+      Views
+      Shares
+      Date
+    }
+  }}`
+        };
+        GraphqlQueryPromise(query).then(function (response) {
+            console.log(response);
+        }).catch(function (err) {
+            console.log("Something went wrong");
+            console.log(err);
+        });
+    </script>
+{% endblock %}

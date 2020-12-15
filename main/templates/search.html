@@ -1,0 +1,41 @@
+{% extends 'common/base.html' %}
+{% load static %}
+{% block title %}
+{% endblock %}
+{% block styles %}
+{% endblock %}
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-10 offset-md-1 block">
+                    <form class="form-inline my-2 my-lg-0">
+                        <input type="text" class="search-query-bg form-control" placeholder="Search..."/>
+                        <button type="submit" class="btn btn-success">Search</button>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10 offset-md-1 block">
+                    <h4>Найдено N результатов</h4>
+                    <div class="row">
+                        <div class="col-md-3 group_card">
+                            <img src="{% static 'img/img.jpg' %}" class="img_group">
+                            <h4 class="group_name">Kali linux</h4>
+                        </div>
+                        <div class="col-md-3 group_card">
+                            <img src="{% static 'img/img.jpg' %}" class="img_group">
+                            <h4 class="group_name">Kali linux</h4>
+                        </div>
+                        <div class="col-md-3 group_card">
+                            <img src="{% static 'img/img.jpg' %}" class="img_group">
+                            <h4 class="group_name">Kali linux</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+{% endblock %}

@@ -1,0 +1,14 @@
+django
+djangorestframework
+social-auth-core
+social-auth-app-django
+psycopg2-binary
+django-cors-headers
+requests
+Pillow
+requests
+algoliasearch-django
+djangorestframework_simplejwt
+rest-social-auth
+pytz
+gunicorn

@@ -1,0 +1,83 @@
+{% extends 'common/base.html' %}
+{% load static %}
+{% block title %}
+    Бот
+{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/fullcalendar.min.css' %}">
+    <link rel="stylesheet" type="text/css" media="print" href="{% static 'css/fullcalendar.print.min.css' %}">
+{% endblock %}
+{% block main %}
+    <div class="container" id="main">
+        <div class="row">
+            <div class="col-md-10 offset-md-1 block">
+                <h3>Как работают отложенные посты</h3>
+                <p>Когда вы планируете пост на будущее, то AdminsSocial будет хранить его на нашем сервере, до тех пор,
+                    пока не придет время его публиковать.
+
+                    За час до публикации AdminsSocial попытается поместить пост в отложенные записи самой соц.сети, если
+                    там есть место. Это необходимо для большей стабильности. Вам не нужно об этом беспокоиться. Просто
+                    планируйте посты, а AdminsSocial возьмет всю работу на себя. </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10 offset-md-1 block">
+                <div id='calendar'></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="overlay" title="окно"></div>
+    <div class="popup">
+        <div class="close_window">x</div>
+        <div class="row">
+            <div class="col-md-8">
+                <form>
+                    <input type="text" class="form-control post_name" placeholder="Название..">
+                    <textarea class="form-control" rows="5" placeholder="Текст.."></textarea>
+                    <button type="submit" class="btn btn-success post_btn">Опубликовать</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="{% static 'js/moment.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/fullcalendar.min.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+
+            // page is now ready, initialize the calendar..
+            $('#calendar').fullCalendar({
+                dayClick: function (e) {
+                    $('.popup, .overlay').css({'opacity': 1, 'visibility': 'visible'});
+                    e.preventDefault();
+                },
+                firstDay: 1,
+                header: {
+                    left: 'prev ',
+                    center: 'title',
+                    right: 'month,agendaDay, next'
+                },
+                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'οюнь', 'οюль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                monthNamesShort: ['Янв.', 'Фев.', 'Март', 'Апр.', 'Май', 'οюнь', 'οюль', 'Авг.', 'Сент.', 'Окт.', 'Ноя.', 'Дек.'],
+                dayNames: ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"],
+                dayNamesShort: ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"],
+                buttonText: {
+                    prev: "<",
+                    next: ">",
+                },
+                themeSystem: 'bootstrap3',
+                height: 500,
+
+            });
+
+
+        });
+
+
+        $('.popup .close_window, .overlay').click(function () {
+            $('.popup, .overlay').css({'opacity': 0, 'visibility': 'hidden'});
+        });
+    </script>
+{% endblock %}

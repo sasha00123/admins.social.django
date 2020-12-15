@@ -1,0 +1,308 @@
+{% extends 'common/base.html' %}
+{% load static %}
+{% block title %}
+    Аналитика
+{% endblock %}
+{% block styles %}
+{% endblock %}
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-12 offset-lg-1 col-lg-10 first_block">
+                <div class="chart-head">
+                    <a href="#lineChart" class="chart_links active">Активность</a>
+                    <a href="#Data" class="chart_links">Данные</a>
+                    <a href="#People" class="chart_links">Подписки</a>
+                </div>
+                <canvas class="tab" id="lineChart" height="100"></canvas>
+                <div class="row tab" id="Data">
+                    <div class="col-lg-5 offset-lg-1  col-md-10 offset-md-1 inline">
+                        <canvas id="pie-chart" width="800" height="450"></canvas>
+                    </div>
+                    <div class="col-lg-5 offset-lg-0 col-md-10 offset-md-1 inline">
+                        <canvas id="pie-chart2" width="800" height="450"></canvas>
+                    </div>
+                </div>
+                <div class="row tab chart_none" id="People">
+                    <canvas id="PeopleChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-12 offset-lg-1 col-lg-10 second_block">
+                <h3 class="block_name">Мои группы</h3>
+                <div class="row">
+                    {% for group in request.user.vk_groups.all %}
+                        <div class="col-md-3 group_card">
+                            <img alt="{{ group.name }}" src="{{ group.photo }}" class="img_group">
+                            <h4 class="group_name">{{ group.name }}</h4>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+
+    <script type="text/javascript">
+
+        // 1 graph
+        var labels = [];
+
+        var likes = [];
+        var shares = [];
+        var views = [];
+
+        var data_chart = {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Лайки",
+                    borderColor: "#3e95cd",
+                    fill: false,
+                    data: likes
+                },
+                {
+                    label: "Просмотры",
+                    borderColor: "#8e5ea2",
+                    fill: false,
+                    data: shares
+                },
+                {
+                    label: "Репосты",
+                    borderColor: "#e8c3b9",
+                    fill: false,
+                    data: views
+                }
+            ]
+        };
+        var ctx = document.getElementById("lineChart").getContext("2d");
+        var options = {};
+        var lineChart = new Chart(ctx, {
+            type: 'line',
+            data: data_chart,
+            options: options
+        });
+
+        //2 graph
+        var gender = new Chart(document.getElementById("pie-chart"), {
+            type: 'doughnut',
+            data: {
+                labels: ["Муж", "Жен"],
+                datasets: [{
+                    label: "Пол",
+                    backgroundColor: ["#3e95cd", "#8e5ea2"],
+                    data: [1, 1]
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Пол'
+                }
+            }
+        });
+
+        // 3 graph
+        var age_chart = new Chart(document.getElementById("pie-chart2"), {
+            type: 'doughnut',
+            data: {
+                labels: ["16-20", "20-30", "30-99"],
+                datasets: [{
+                    label: "Возраст",
+                    backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f"],
+                    data: [1, 1, 1]
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Возраст'
+                }
+            }
+        });
+        // 4 graph
+        var people_chart = new Chart(document.getElementById("PeopleChart"), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    label: "Подписки",
+                    borderColor: "#3e95cd",
+                    fill: false
+                }, {
+                    data: [],
+                    label: "Отписки",
+                    borderColor: "#8e5ea2",
+                    fill: false
+                }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Подписки/Отписки'
+                }
+            }
+        });
+        //
+
+        let VK_ACCESS_TOKEN = "{{ request.user.profile.access_token }}";
+        let g1 = [], g2 = [], g3 = [];
+
+        let groups = [
+            {% for g in request.user.vk_groups.all %}
+                {{ g.gid }},
+            {% endfor %}
+        ];
+
+        let STATS_CODE = `
+            var groups = ${JSON.stringify(groups.slice(0, 25))};
+            var i = 0;
+            var blocks = [];
+            while (i < groups.length) {
+                var block = API.wall.get({owner_id:-groups[i]}).items;
+                blocks.push(block);
+                i = i + 1;
+            }
+            return blocks;
+        `;
+
+
+        // Graph 1
+        let script = document.createElement('SCRIPT');
+        let query = {
+            v: '5.92',
+            access_token: VK_ACCESS_TOKEN,
+            code: STATS_CODE,
+            callback: "callbackFunc1"
+        };
+        script.src = `https://api.vk.com/method/execute?${serialize(query)}`;
+        document.getElementsByTagName("head")[0].appendChild(script);
+
+        function callbackFunc1(result) {
+            result.response.forEach(function (block) {
+                block.forEach(function (item, i) {
+                    g1.push({
+                        likes: (item.likes === undefined) ? 0 : item.likes['count'],
+                        views: (item.views === undefined) ? 0 : item.views['count'],
+                        shares: (item.shares === undefined) ? 0 : item.shares['count'],
+                        date: new Date(item.date * 1000)
+                    });
+                    lineChart.data.labels.push(i);
+                    lineChart.data.datasets[0].data.push((item.likes === undefined) ? 0 : item.likes['count']);
+                    lineChart.data.datasets[1].data.push((item.views === undefined) ? 0 : item.views['count']);
+                    lineChart.data.datasets[2].data.push((item.shares === undefined) ? 0 : item.shares['count']);
+                    lineChart.update();
+                });
+            });
+        }
+
+        let MEMBERS_CODE = `
+            var groups = ${JSON.stringify(groups.slice(0, 25))};
+            var i = 0;
+            var blocks = [];
+            while (i < groups.length)
+            {
+                var block = API.groups.getMembers({group_id:groups[i], fields: "sex, bdate"}).items;
+                blocks.push(block);
+                i = i + 1;
+            }
+            return blocks;
+        `;
+
+        // Graph 2
+        script = document.createElement('SCRIPT');
+        query = {
+            v: '5.92',
+            access_token: VK_ACCESS_TOKEN,
+            code: MEMBERS_CODE,
+            callback: "callbackFunc2"
+        };
+        script.src = `https://api.vk.com/method/execute?${serialize(query)}`;
+        document.getElementsByTagName("head")[0].appendChild(script);
+
+
+        function callbackFunc2(result) {
+            result.response.forEach(function (block) {
+                block.forEach(function (item) {
+                    g2.push(item);
+                    if (item['sex'] == 2) {
+                        gender.data.datasets[0].data[0] += 1;
+                    }
+                    if (item['sex'] == 1) {
+                        gender.data.datasets[0].data[1] += 1;
+                    }
+                    gender.update();
+                    if (typeof (item['bdate']) !== 'undefined') {
+                        if (item['bdate'].split('.').length > 2) {
+                            let d = item['bdate'].split('.');
+                            let age = (new Date().getTime() - new Date(d[2], d[1], d[0])) / (24 * 3600 * 365.25 * 1000);
+                            if (age >= 16 & age <= 20) {
+                                age_chart.data.datasets[0].data[0] += 1;
+                            }
+                            if (age >= 21 & age <= 30) {
+                                age_chart.data.datasets[0].data[1] += 1;
+                            }
+                            if (age >= 31 & age <= 99) {
+                                age_chart.data.datasets[0].data[2] += 1;
+                            }
+                            age_chart.update();
+                        }
+                    }
+                });
+            });
+        }
+
+
+        // sum of ads and leaved
+        let ads = 0;
+        let leave = 0;
+        // TODO: Graphic 3
+        groups.forEach(function (gid) {
+            query = `
+               query {
+                  group(_key:"${gid}"){
+                    Updates {
+                      NaturalNew
+                      TotalNew
+                      AdsNew
+                      Leaved
+                      Date
+                    }
+                  }
+                }
+            `;
+            GraphqlQueryPromise(query).then(function (response) {
+                response.data.data.group.Updates.forEach(function (group) {
+                    g3.push(group);
+                    people_chart.data.labels.push(new Date(group['Date']).getDate() + "." + new Date(group['Date']).getMonth() + "." + new Date(group['Date']).getFullYear());
+                    people_chart.data.datasets[0].data.push(group['AdsNew']);
+                    people_chart.data.datasets[1].data.push(group['Leaved']);
+                    people_chart.update()
+                });
+            });
+        });
+
+
+        /*
+            var label = post['Date'];
+            var chart_data = [];
+            chart_data.push(post['Likes']);
+            chart_data.push(post['Views']);
+            chart_data.push(post['Shares']);
+
+            function addData(lineChart, label, chart_data) {
+                chart.data.labels.push(label);
+                chart.data.datasets.forEach((dataset) => {
+                    dataset.data.push(data);
+                });
+                chart.update();
+            }
+            */
+    </script>
+{% endblock %}

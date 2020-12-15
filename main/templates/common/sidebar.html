@@ -1,0 +1,43 @@
+<div class="nav-side-menu">
+    <div class="menu-list">
+        <ul id="menu-content" class="menu-content">
+            <li>
+                <span class="sidebar_logo">
+                    <img class="user_logo" src="{{ request.user.profile.avatar }}">
+                </span>
+                <span class="sidebar_name">
+                    <a class="person_name">{{ request.user.first_name }} {{ request.user.last_name }}</a>
+                </span>
+                <span class="sidebar_logout">
+                     <a href="{% url "accounts:logout" %}">Logout</a>
+                 </span>
+            </li>
+            <a class='menu-a' href='{% url 'main:main' %}'>
+                <li class="{% if request.path == '/' %} active {% endif %} childs">
+
+                    <i class="fa fa-home fa-lg"></i> <span class="menu-li"> Главная </span>
+
+                </li>
+            </a>
+            <a class='menu-a' href="{% url 'main:Bot' %}">
+
+                <li class="{% if request.path == '/bot/' %} active {% endif %} childs">
+                    <i class="fa fa-calendar fa-lg"></i> <span class="menu-li">Бот</span>
+                </li>
+            </a>
+            <a class='menu-a' href="{% url 'main:crime' %}">
+
+                <li class="{% if request.path == '/crime/' %} active {% endif %} childs">
+                    <i class="fa fa-address-book fa-lg"></i> <span class="menu-li">База мошенников</span>
+                </li>
+            </a>
+            <a class='menu-a' href="#">
+
+                <li class="{% if request.path == '/welcome/' %} active {% endif %} childs">
+                    <i class="fas fa-briefcase fa-lg"></i> <span class="menu-li">Обучение</span>
+
+                </li>
+            </a>
+        </ul>
+    </div>
+</div>

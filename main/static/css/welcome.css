@@ -1,0 +1,73 @@
+html, body {
+    margin: 0;
+    height: 100%;
+    background: url("../img/back.png") no-repeat center;
+    font-family: Arial, sans-serif;
+}
+.main{
+    width: 100%;
+    height: 100%;
+    background-color: darkgrey;
+    opacity: 0.7;
+    position:fixed;
+}
+.sub{
+    padding-top: 40vh;
+    width: 100%;
+    opacity: 1;
+    text-align: center;
+}
+.auth_btn {
+    border-radius: 30px !important;
+    background: #35a1f0;
+    color: white;
+    cursor: inherit;
+}
+.user{
+    padding-left: 2vw;
+}
+h1{
+    font-size: 3rem !important;
+    color: white !important;
+}
+h2{
+    color: white !important;
+}
+.navbar {
+    height: 8vh;
+}
+
+.navbar-brand {
+    width: 12vw;
+    padding: 25px !important;
+    height: 100%;
+}
+
+.page_name {
+    padding-right: 5vw;
+    color: white;
+}
+
+.block_name {
+    color: #322828;
+    font-style: italic;
+}
+
+.fixed-top {
+    padding: 0 !important;
+}
+
+.person_name {
+    color: white !important;
+    width: 7vw;
+}
+
+.logo_img {
+    width: 9vw;
+    height: 5vh;
+}
+@media (max-width: 768px){
+    .logo_img{
+        width: 20vw;
+    }
+}

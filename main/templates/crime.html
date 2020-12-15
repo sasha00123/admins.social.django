@@ -1,0 +1,38 @@
+{% extends 'common/base.html' %}
+{% load static %}
+{% block title %}
+    База мошенников
+{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch-theme-algolia.min.css">
+{% endblock %}
+{% block main %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-10 offset-md-1 block">
+                    <div id="search-box">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10 offset-md-1 block">
+                    <ol class="bullet" id="hits">
+
+                    </ol>
+                    <div id="pagination-container">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4"></script>
+    <script src="{% static 'js/search.js' %}"></script>
+{% endblock %}

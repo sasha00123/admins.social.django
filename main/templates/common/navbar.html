@@ -1,0 +1,20 @@
+{% load static %}
+<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+
+    <a class="navbar-brand" href="#"><img class="logo_img" src="{% static 'img/3ad.png' %}"></a>
+    <h3 class="page_name">Аналитика</h3>
+    <form class="form-inline my-2 my-lg-0">
+        <input type="text" class="search-query form-control" placeholder="Search..."/>
+    </form>
+    <div class="right_info">
+        {% if request.user.is_authenticated %}
+
+        {% else %}
+            <span class="user">
+           <a href="{% url "social:begin" "vk-oauth2" %}">
+               <button type="submit" class="btn group_btn auth_btn">Войти через ВК</button>
+           </a>
+        </span>
+        {% endif %}
+    </div>
+</nav>
